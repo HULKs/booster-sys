@@ -2,7 +2,7 @@ use booster_sys::robot::common::ffi::RobotMode;
 use cxx::let_cxx_string;
 
 fn main() {
-    let network_interface = std::env::args().nth(2).expect("Expected a network interface as CLI argument");
+    let network_interface = std::env::args().nth(1).expect("Expected a network interface as CLI argument");
     let_cxx_string!(network_interface_cxx = network_interface);
     
     booster_sys::robot::ffi::init_channel_factory(&network_interface_cxx);
@@ -22,7 +22,7 @@ fn main() {
     loop {
         std::io::stdin().read_line(&mut input_buffer).unwrap();
         if !input_buffer.is_empty() {
-            match input_buffer.as_str() {
+            match input_buffer.as_str().trim() {
                 "mp" => {
                     result = client.pin_mut().ChangeMode(RobotMode::kPrepare)
                 }
@@ -217,5 +217,6 @@ fn main() {
                 println!("Request failed: error = {result}");
             }
         }
+        input_buffer.clear();
     }
 }
