@@ -1,5 +1,5 @@
 fn main() {
-    let mut bridge = cxx_build::bridges(["src/robot.rs", "src/robot/b1.rs"]);
+    let mut bridge = cxx_build::bridges(["src/robot.rs", "src/robot/b1.rs", "src/robot/b1.rs"]);
 
     bridge
         .cpp(true)
@@ -10,8 +10,6 @@ fn main() {
         .include("booster_robotics_sdk/third_party/include")
         .compile("wrapper");
 
-    // Link your precompiled static library
-    println!("cargo::rerun-if-changed=src/lib.rs");
     println!("cargo::rustc-link-search=native=booster_robotics_sdk/lib/x86_64");
     println!("cargo::rustc-link-search=native=booster_robotics_sdk/third_party/lib/x86_64");
     println!("cargo::rustc-link-lib=static=booster_robotics_sdk");

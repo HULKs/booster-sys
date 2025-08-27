@@ -1,6 +1,7 @@
 // use cxx::type_id;
 
 pub mod b1;
+pub mod common;
 
 // #[cxx::bridge(namespace = "booster::robot")]
 // pub mod ffi {
@@ -20,6 +21,7 @@ pub mod b1;
 //     type Id = type_id!("booster::robot::ChannelFactory");
 //     type Kind = cxx::kind::Trivial;
 // }
+
 
 #[cxx::bridge]
 pub mod ffi {

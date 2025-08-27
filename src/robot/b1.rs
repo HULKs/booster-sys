@@ -20,11 +20,19 @@ pub mod ffi {
     }
 
     unsafe extern "C++" {
+        #[namespace = "booster::robot"]
+        type RobotMode = crate::robot::common::ffi::RobotMode;
+
         include!("booster/robot/b1/b1_loco_client.hpp");
         include!("wrapper.hpp");
-
         type B1LocoClient;
         type LocoApiId;
+
+        #[namespace = ""]
+        #[cxx_name = "construct_unique"]
+        fn b1_loco_client_new() -> UniquePtr<B1LocoClient>;
+
+        fn Init(self: Pin<&mut B1LocoClient>);
 
         fn SendApiRequest(
             self: Pin<&mut B1LocoClient>,
@@ -32,11 +40,19 @@ pub mod ffi {
             param: &CxxString,
         ) -> i32;
 
-        fn Init(self: Pin<&mut B1LocoClient>);
+        // fn SendApiRequestWithResponse(
+        //     self: Pin<&mut B1LocoClient>,
+        //     api_id: LocoApiId,
+        //     param: &CxxString,
+        // ) -> i32;
 
-        #[namespace = ""]
-        #[cxx_name = "construct_unique"]
-        fn b1_loco_client_new() -> UniquePtr<B1LocoClient>;
+        fn ChangeMode(self: Pin<&mut B1LocoClient>, mode: RobotMode) -> i32;
+
+        fn Move(self: Pin<&mut B1LocoClient>, vx: f32, vy: f32, vyaw: f32) -> i32;
+
+        fn RotateHead(self: Pin<&mut B1LocoClient>, pitch: f32, yaw: f32) -> i32;
+
+        // fn WaveHand(self: Pin<&mut B1LocoClient>, action: HandAction) -> i32;
     }
 }
 
@@ -52,7 +68,7 @@ mod tests {
     fn api_call() {
         let_cxx_string!(network_interface = "127.0.0.1");
         init_channel_factory(&network_interface);
-    
+
         let api_id = LocoApiId::kWaveHand;
         let_cxx_string!(param = "");
         let mut client = b1_loco_client_new();
